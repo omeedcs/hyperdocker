@@ -159,6 +159,57 @@ impl ContentStore {
         Ok(())
     }
 
+    /// List all manifest hashes in the store.
+    pub fn list_manifests(&self) -> Result<Vec<ContentHash>, StoreError> {
+        Self::list_hashes(&self.manifests_dir)
+    }
+
+    /// List all chunk hashes in the store.
+    pub fn list_chunks(&self) -> Result<Vec<ContentHash>, StoreError> {
+        Self::list_hashes(&self.objects_dir)
+    }
+
+    /// Remove a manifest by hash.
+    pub fn remove_manifest(&self, hash: &ContentHash) -> Result<(), StoreError> {
+        let path = self.manifest_path(hash);
+        if path.exists() {
+            fs::remove_file(&path)?;
+        }
+        Ok(())
+    }
+
+    /// Remove a chunk by hash.
+    pub fn remove_chunk(&self, hash: &ContentHash) -> Result<(), StoreError> {
+        let path = self.chunk_path(hash);
+        if path.exists() {
+            fs::remove_file(&path)?;
+        }
+        Ok(())
+    }
+
+    fn list_hashes(dir: &Path) -> Result<Vec<ContentHash>, StoreError> {
+        let mut hashes = Vec::new();
+        if !dir.exists() {
+            return Ok(hashes);
+        }
+        for shard_entry in fs::read_dir(dir)? {
+            let shard_entry = shard_entry?;
+            if !shard_entry.file_type()?.is_dir() {
+                continue;
+            }
+            let shard = shard_entry.file_name().to_string_lossy().to_string();
+            for entry in fs::read_dir(shard_entry.path())? {
+                let entry = entry?;
+                let rest = entry.file_name().to_string_lossy().to_string();
+                let hex = format!("{}{}", shard, rest);
+                if let Ok(hash) = ContentHash::from_hex(&hex) {
+                    hashes.push(hash);
+                }
+            }
+        }
+        Ok(hashes)
+    }
+
     fn chunk_path(&self, hash: &ContentHash) -> PathBuf {
         let hex = hash.to_hex();
         self.objects_dir.join(&hex[..2]).join(&hex[2..])
