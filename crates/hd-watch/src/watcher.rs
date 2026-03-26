@@ -36,7 +36,9 @@ impl FileWatcher {
         }
 
         let (tx, rx) = mpsc::channel();
-        let config = Config::default().with_poll_interval(interval);
+        let config = Config::default()
+            .with_poll_interval(interval)
+            .with_compare_contents(true);
         let mut watcher = PollWatcher::new(tx, config)?;
         watcher.watch(root, RecursiveMode::Recursive)?;
 
@@ -118,7 +120,7 @@ mod tests {
         let mut watcher = test_watcher(dir.path(), filter);
 
         // Small delay to let the watcher do its initial scan
-        std::thread::sleep(Duration::from_millis(200));
+        std::thread::sleep(Duration::from_millis(500));
 
         // Modify file
         fs::write(&file_path, b"modified").unwrap();
@@ -139,7 +141,7 @@ mod tests {
         let mut watcher = test_watcher(dir.path(), filter);
 
         // Small delay to let the watcher do its initial scan
-        std::thread::sleep(Duration::from_millis(200));
+        std::thread::sleep(Duration::from_millis(500));
 
         fs::write(&log_path, b"more log").unwrap();
         fs::write(&rs_path, b"more code").unwrap();
@@ -159,7 +161,7 @@ mod tests {
         let mut watcher = test_watcher(dir.path(), filter);
 
         // Small delay to let the watcher do its initial scan
-        std::thread::sleep(Duration::from_millis(200));
+        std::thread::sleep(Duration::from_millis(500));
 
         // Create a new file
         let new_file = dir.path().join("new.rs");
