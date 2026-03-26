@@ -12,7 +12,7 @@ blake3 = "1.6"
 fastcdc = "3.1"
 zstd = "0.13"
 serde = { version = "1.0", features = ["derive"] }
-bincode = "2.0"
+bincode = { version = "2.0", features = ["serde"] }
 rayon = "1.10"
 tempfile = "3.15"
 thiserror = "2.0"
