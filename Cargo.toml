@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/hd-cas", "crates/hd-engine", "crates/hd-spec", "crates/hd-mount", "crates/hd-watch", "crates/hd-sandbox"]
+members = ["crates/hd-cas", "crates/hd-engine", "crates/hd-spec", "crates/hd-mount", "crates/hd-watch", "crates/hd-sandbox", "crates/hd-oci"]
 resolver = "2"
 
 [workspace.package]
@@ -22,3 +22,7 @@ fuser = "0.15"
 libc = "0.2"
 nix = { version = "0.29", features = ["signal", "process"] }
 notify = "7.0"
+reqwest = { version = "0.12", features = ["blocking"] }
+tar = "0.4"
+flate2 = "1.0"
+serde_json = "1.0"

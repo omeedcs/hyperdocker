@@ -1,0 +1,19 @@
+[package]
+name = "hd-oci"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]
+hd-cas = { path = "../hd-cas" }
+hd-spec = { path = "../hd-spec" }
+hd-engine = { path = "../hd-engine" }
+reqwest.workspace = true
+tar.workspace = true
+flate2.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
