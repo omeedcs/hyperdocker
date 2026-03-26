@@ -1,0 +1,24 @@
+[package]
+name = "hd-cli"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[[bin]]
+name = "hd"
+path = "src/main.rs"
+
+[dependencies]
+hd-cas = { path = "../hd-cas" }
+hd-engine = { path = "../hd-engine" }
+hd-spec = { path = "../hd-spec" }
+hd-mount = { path = "../hd-mount" }
+hd-watch = { path = "../hd-watch" }
+hd-sandbox = { path = "../hd-sandbox" }
+hd-oci = { path = "../hd-oci" }
+clap.workspace = true
+dirs.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true

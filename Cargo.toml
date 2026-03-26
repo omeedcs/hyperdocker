@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/hd-cas", "crates/hd-engine", "crates/hd-spec", "crates/hd-mount", "crates/hd-watch", "crates/hd-sandbox", "crates/hd-oci"]
+members = ["crates/hd-cas", "crates/hd-engine", "crates/hd-spec", "crates/hd-mount", "crates/hd-watch", "crates/hd-sandbox", "crates/hd-oci", "crates/hd-cli"]
 resolver = "2"
 
 [workspace.package]
@@ -26,3 +26,5 @@ reqwest = { version = "0.12", features = ["blocking"] }
 tar = "0.4"
 flate2 = "1.0"
 serde_json = "1.0"
+clap = { version = "4.5", features = ["derive"] }
+dirs = "6.0"
