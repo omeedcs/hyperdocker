@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/hd-cas", "crates/hd-engine"]
+members = ["crates/hd-cas", "crates/hd-engine", "crates/hd-spec"]
 resolver = "2"
 
 [workspace.package]
@@ -16,3 +16,5 @@ bincode = { version = "2.0", features = ["serde"] }
 rayon = "1.10"
 tempfile = "3.15"
 thiserror = "2.0"
+toml = "0.8"
+glob = "0.3"
