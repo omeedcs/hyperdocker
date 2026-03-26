@@ -38,7 +38,7 @@ pub fn translate_dockerfile(content: &str) -> Result<EnvSpec, DockerfileError> {
         if upper.starts_with("FROM ") {
             base = line[5..].trim().to_string();
             // Derive name from base image
-            if let Some(img_name) = base.split('/').last() {
+            if let Some(img_name) = base.split('/').next_back() {
                 name = img_name.split(':').next().unwrap_or("app").to_string();
             }
         } else if upper.starts_with("RUN ") {
