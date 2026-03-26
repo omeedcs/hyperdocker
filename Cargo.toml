@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/hd-cas", "crates/hd-engine", "crates/hd-spec", "crates/hd-mount", "crates/hd-watch"]
+members = ["crates/hd-cas", "crates/hd-engine", "crates/hd-spec", "crates/hd-mount", "crates/hd-watch", "crates/hd-sandbox"]
 resolver = "2"
 
 [workspace.package]
@@ -20,4 +20,5 @@ toml = "0.8"
 glob = "0.3"
 fuser = "0.15"
 libc = "0.2"
+nix = { version = "0.29", features = ["signal", "process"] }
 notify = "7.0"

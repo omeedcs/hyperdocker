@@ -1,0 +1,13 @@
+[package]
+name = "hd-sandbox"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]
+hd-spec = { path = "../hd-spec" }
+nix.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
