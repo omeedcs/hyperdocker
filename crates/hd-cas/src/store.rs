@@ -113,6 +113,19 @@ impl ContentStore {
         Ok(Manifest::from_bytes(&bytes)?)
     }
 
+    /// Ingest raw bytes as a file: chunk, store chunks, create manifest.
+    /// Returns the manifest hash. Convenience method for when you have data in memory.
+    pub fn put_file_from_bytes(&self, data: &[u8], mode: u32) -> Result<ContentHash, StoreError> {
+        let chunks = chunk_data(data);
+        let mut chunk_hashes = Vec::with_capacity(chunks.len());
+        for chunk in chunks {
+            let hash = self.put_chunk(chunk)?;
+            chunk_hashes.push(hash);
+        }
+        let manifest = Manifest::new(chunk_hashes, data.len() as u64, mode);
+        self.put_manifest(&manifest)
+    }
+
     /// Ingest a file: chunk it, store all chunks, create and store a manifest.
     /// Returns the manifest hash.
     pub fn put_file(&self, path: &Path) -> Result<ContentHash, StoreError> {
