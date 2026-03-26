@@ -1,0 +1,16 @@
+[package]
+name = "hd-engine"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]
+hd-cas = { path = "../hd-cas" }
+blake3.workspace = true
+serde.workspace = true
+bincode.workspace = true
+rayon.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true

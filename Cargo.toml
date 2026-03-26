@@ -1,0 +1,18 @@
+[workspace]
+members = ["crates/hd-cas", "crates/hd-engine"]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+license = "MIT"
+version = "0.1.0"
+
+[workspace.dependencies]
+blake3 = "1.6"
+fastcdc = "3.1"
+zstd = "0.13"
+serde = { version = "1.0", features = ["derive"] }
+bincode = "2.0"
+rayon = "1.10"
+tempfile = "3.15"
+thiserror = "2.0"
