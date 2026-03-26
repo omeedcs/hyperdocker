@@ -10,8 +10,8 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-hd-cas = { path = "../hd-cas" }
-hd-engine = { path = "../hd-engine" }
+hd-cas = { path = "../hd-cas", version = "0.1.0" }
+hd-engine = { path = "../hd-engine", version = "0.1.0" }
 fuser.workspace = true
 libc.workspace = true
 thiserror.workspace = true

@@ -10,7 +10,7 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-hd-spec = { path = "../hd-spec" }
+hd-spec = { path = "../hd-spec", version = "0.1.0" }
 nix.workspace = true
 thiserror.workspace = true
 
