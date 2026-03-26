@@ -1,0 +1,17 @@
+[package]
+name = "hd-watch"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]
+hd-cas = { path = "../hd-cas" }
+hd-engine = { path = "../hd-engine" }
+hd-spec = { path = "../hd-spec" }
+notify.workspace = true
+glob.workspace = true
+blake3.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
