@@ -102,7 +102,7 @@ impl GarbageCollector {
     fn write_ref_count(&self, hash: &ContentHash, count: u64) -> Result<(), GcError> {
         let path = self.ref_path(hash);
         fs::create_dir_all(path.parent().unwrap())?;
-        fs::write(&path, &count.to_le_bytes())?;
+        fs::write(&path, count.to_le_bytes())?;
         Ok(())
     }
 
