@@ -86,9 +86,9 @@ fn topo_sort(defs: &[ServiceDef]) -> Vec<ServiceDef> {
     let mut sorted = Vec::new();
     let mut visited = HashSet::new();
 
-    fn visit<'a>(
+    fn visit(
         name: &str,
-        name_to_def: &HashMap<&str, &'a ServiceDef>,
+        name_to_def: &HashMap<&str, &ServiceDef>,
         visited: &mut HashSet<String>,
         sorted: &mut Vec<ServiceDef>,
     ) {
