@@ -64,7 +64,7 @@ impl FuseFs {
         FileAttr {
             ino: inode,
             size,
-            blocks: (size + 511) / 512,
+            blocks: size.div_ceil(512),
             atime: UNIX_EPOCH,
             mtime: UNIX_EPOCH,
             ctime: UNIX_EPOCH,
