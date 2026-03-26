@@ -3,6 +3,11 @@ name = "hd-cli"
 edition.workspace = true
 license.workspace = true
 version.workspace = true
+description = "CLI binary for hyperdocker - the `hd` command"
+repository.workspace = true
+readme.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [[bin]]
 name = "hd"

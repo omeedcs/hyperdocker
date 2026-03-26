@@ -3,6 +3,11 @@ name = "hd-engine"
 edition.workspace = true
 license.workspace = true
 version.workspace = true
+description = "Merkle DAG engine with incremental invalidation for hyperdocker"
+repository.workspace = true
+readme.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [dependencies]
 hd-cas = { path = "../hd-cas" }

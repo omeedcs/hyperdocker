@@ -3,6 +3,11 @@ name = "hd-mount"
 edition.workspace = true
 license.workspace = true
 version.workspace = true
+description = "FUSE filesystem projection from Merkle DAG for hyperdocker"
+repository.workspace = true
+readme.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [dependencies]
 hd-cas = { path = "../hd-cas" }

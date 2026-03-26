@@ -3,6 +3,11 @@ name = "hd-spec"
 edition.workspace = true
 license.workspace = true
 version.workspace = true
+description = "TOML environment spec parser and dependency provider framework for hyperdocker"
+repository.workspace = true
+readme.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [dependencies]
 hd-cas = { path = "../hd-cas" }

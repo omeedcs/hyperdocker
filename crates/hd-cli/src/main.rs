@@ -1,3 +1,26 @@
+//! # hd-cli
+//!
+//! CLI binary for hyperdocker -- the `hd` command.
+//!
+//! This is the main entry point for the hyperdocker tool. It provides
+//! subcommands for creating, starting, stopping, and inspecting environments:
+//!
+//! - `hd init` -- scaffold a new `hd.toml` in the current directory
+//! - `hd up` -- build and start the environment
+//! - `hd down` -- stop the environment
+//! - `hd status` -- show environment status
+//! - `hd exec <cmd>` -- run a command inside the sandbox
+//! - `hd ingest <Dockerfile>` -- translate a Dockerfile to `hd.toml`
+//! - `hd lock` -- generate or update `hd.lock`
+//! - `hd dag show` -- inspect the Merkle DAG
+//! - `hd cas stats|gc` -- CAS storage management
+//!
+//! ## Installation
+//!
+//! ```sh
+//! cargo install hd-cli
+//! ```
+
 use clap::{Parser, Subcommand};
 
 mod commands;

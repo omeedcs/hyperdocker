@@ -3,6 +3,11 @@ name = "hd-cas"
 edition.workspace = true
 license.workspace = true
 version.workspace = true
+description = "Content-addressable store with BLAKE3 hashing and CDC chunking for hyperdocker"
+repository.workspace = true
+readme.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [dependencies]
 blake3.workspace = true

@@ -6,6 +6,12 @@ resolver = "2"
 edition = "2021"
 license = "MIT"
 version = "0.1.0"
+description = "A content-addressed, incremental container runtime"
+repository = "https://github.com/omeedcs/hyperdocker"
+documentation = "https://docs.rs/hd-cas"
+readme = "README.md"
+keywords = ["containers", "docker", "merkle-dag", "content-addressed", "devtools"]
+categories = ["development-tools", "command-line-utilities"]
 
 [workspace.dependencies]
 blake3 = "1.6"

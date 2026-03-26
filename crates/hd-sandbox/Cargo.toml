@@ -3,6 +3,11 @@ name = "hd-sandbox"
 edition.workspace = true
 license.workspace = true
 version.workspace = true
+description = "Process sandbox with service lifecycle management for hyperdocker"
+repository.workspace = true
+readme.workspace = true
+keywords.workspace = true
+categories.workspace = true
 
 [dependencies]
 hd-spec = { path = "../hd-spec" }
