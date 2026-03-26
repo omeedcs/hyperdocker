@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/hd-cas", "crates/hd-engine", "crates/hd-spec"]
+members = ["crates/hd-cas", "crates/hd-engine", "crates/hd-spec", "crates/hd-mount"]
 resolver = "2"
 
 [workspace.package]
@@ -18,3 +18,5 @@ tempfile = "3.15"
 thiserror = "2.0"
 toml = "0.8"
 glob = "0.3"
+fuser = "0.15"
+libc = "0.2"
