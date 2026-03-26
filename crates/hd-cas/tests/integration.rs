@@ -1,5 +1,3 @@
-use hd_cas::hash::ContentHash;
-use hd_cas::manifest::Manifest;
 use hd_cas::store::ContentStore;
 use hd_cas::gc::GarbageCollector;
 use tempfile::TempDir;
