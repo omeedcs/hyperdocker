@@ -1,6 +1,9 @@
+use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::time::Instant;
+
+use crate::commands::up::StubProvider;
 
 const BENCH_RUNS: usize = 5;
 
@@ -43,12 +46,12 @@ pub fn run(path: Option<&str>) -> Result<(), Box<dyn std::error::Error>> {
     println!("  Done in {:.1} ms\n", hd_cold_ms);
 
     // ── Phase 3: Show file diff preview ──────────────────────────────────────
-    println!("{}", bold("Phase 5: File diff preview"));
+    println!("{}", bold("Phase 3: File Change + Diff Preview"));
     show_diff_preview(&project_dir)?;
     println!();
 
     // ── Phase 4: Warm rebuild benchmark (BENCH_RUNS runs, median) ─────────────
-    println!("{}", bold("Phase 4: Warm rebuild benchmark"));
+    println!("{}", bold("Phase 4: Rebuild Comparison"));
     println!("  Running {} iterations each (median reported)…\n", BENCH_RUNS);
 
     let app_py = project_dir.join("app.py");
@@ -92,9 +95,9 @@ pub fn run(path: Option<&str>) -> Result<(), Box<dyn std::error::Error>> {
     let hd_median = median(&hd_warm_times);
     let speedup = docker_median / hd_median.max(0.001);
 
-    // ── Phase 6: Results table ────────────────────────────────────────────────
+    // ── Phase 5: Results table ────────────────────────────────────────────────
     println!();
-    println!("{}", bold("Phase 6: Results"));
+    println!("{}", bold("Phase 5: Results"));
     println!("{}", bold("----------------------------------------------------------"));
     println!("{:<40} {:>12}", bold("Metric"), bold("Time"));
     println!("{}", bold("----------------------------------------------------------"));
@@ -197,7 +200,12 @@ fn hd_build_timed(dir: &Path) -> Result<(f64, hd_cas::ContentHash), Box<dyn std:
         .join("cas");
     let store = hd_cas::ContentStore::open(&cas_path)?;
     let file_store = hd_cas::ContentStore::open(&cas_path)?;
-    let registry = hd_spec::ProviderRegistry::new();
+    let mut registry = hd_spec::ProviderRegistry::new();
+    for provider_name in spec.dependencies.keys() {
+        registry.register(Box::new(StubProvider {
+            provider_name: provider_name.clone(),
+        }));
+    }
     let mut dag = hd_engine::Dag::new(store);
     let root_hash = hd_spec::compile_with_files(&spec, &registry, &mut dag, dir, &file_store)?;
     let elapsed_ms = start.elapsed().as_secs_f64() * 1000.0;
@@ -235,21 +243,78 @@ fn median(values: &[f64]) -> f64 {
 
 // ── Visual diff preview ───────────────────────────────────────────────────────
 
-fn show_diff_preview(project_dir: &Path) -> Result<(), Box<dyn std::error::Error>> {
-    let entries: Vec<_> = std::fs::read_dir(project_dir)?
-        .filter_map(|e| e.ok())
-        .filter(|e| e.file_type().map(|t| t.is_file()).unwrap_or(false))
-        .collect();
+fn ingest_file_hashes(
+    project_dir: &Path,
+    spec: &hd_spec::EnvSpec,
+) -> Result<BTreeMap<String, String>, Box<dyn std::error::Error>> {
+    let cas_path = dirs::home_dir()
+        .unwrap_or_default()
+        .join(".hd")
+        .join("cas");
+    let store = hd_cas::ContentStore::open(&cas_path)?;
+    let mut dag = hd_engine::Dag::new(hd_cas::ContentStore::open(&cas_path)?);
+    let result = hd_engine::ingest_tree(
+        project_dir,
+        &spec.files.include,
+        &spec.files.exclude,
+        &store,
+        &mut dag,
+    )?;
+    Ok(result
+        .file_hashes
+        .into_iter()
+        .map(|(k, v)| (k, v.to_hex()))
+        .collect())
+}
 
-    println!("  Files in project (app.py will be modified):");
-    for entry in &entries {
-        let name = entry.file_name();
-        let name_str = name.to_string_lossy();
-        if name_str == "app.py" {
-            println!("    {} (modified)", yellow(&name_str));
-        } else {
-            println!("    {}", dim(&name_str));
+fn show_diff_preview(project_dir: &Path) -> Result<(), Box<dyn std::error::Error>> {
+    let spec = hd_spec::EnvSpec::from_file(&project_dir.join("hd.toml"))?;
+    let app_py = project_dir.join("app.py");
+
+    // Ingest before modification
+    let before = ingest_file_hashes(project_dir, &spec)?;
+
+    // Apply modification to app.py
+    let original = std::fs::read_to_string(&app_py)?;
+    let modified = original.replace(
+        "Hello from Hyperdocker!",
+        "Hello from Hyperdocker! (modified)",
+    );
+    std::fs::write(&app_py, &modified)?;
+
+    // Ingest after modification
+    let after = ingest_file_hashes(project_dir, &spec)?;
+
+    // Restore original immediately
+    std::fs::write(&app_py, &original)?;
+
+    // Compare and print actual diff
+    println!("  Visual DAG diff (after modifying app.py):");
+    let mut all_keys: std::collections::BTreeSet<&str> = std::collections::BTreeSet::new();
+    for k in before.keys() {
+        all_keys.insert(k.as_str());
+    }
+    for k in after.keys() {
+        all_keys.insert(k.as_str());
+    }
+
+    for path in &all_keys {
+        match (before.get(*path), after.get(*path)) {
+            (Some(b), Some(a)) if b != a => {
+                println!("    {}  (content changed)", yellow(path));
+            }
+            (Some(_), Some(_)) => {
+                println!("    {}  (unchanged)", dim(path));
+            }
+            (None, Some(_)) => {
+                println!("    {}  (added)", green(path));
+            }
+            (Some(_), None) => {
+                println!("    {}  (removed)", yellow(path));
+            }
+            (None, None) => {}
         }
     }
+
     Ok(())
 }
