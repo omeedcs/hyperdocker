@@ -1,0 +1,20 @@
+[environment]
+name = "flask-demo"
+base = "python:3.11-slim"
+
+[dependencies]
+pip = { file = "requirements.txt" }
+
+[build]
+steps = ["pip install --no-cache-dir -r requirements.txt"]
+
+[services.web]
+command = "python app.py"
+watch = ["*.py", "templates/**/*.html"]
+port = 5000
+depends_on = []
+restart_policy = "always"
+
+[files]
+include = ["*.py", "templates", "requirements.txt"]
+exclude = [".git", "__pycache__", "*.pyc"]
