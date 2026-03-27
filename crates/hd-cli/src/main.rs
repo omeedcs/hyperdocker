@@ -24,6 +24,7 @@
 use clap::{Parser, Subcommand};
 
 mod commands;
+mod render;
 
 #[derive(Parser)]
 #[command(name = "hd", about = "Hyperdocker — incremental container runtime")]
