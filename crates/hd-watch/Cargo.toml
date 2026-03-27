@@ -10,9 +10,9 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-hd-cas = { path = "../hd-cas", version = "0.1.0" }
-hd-engine = { path = "../hd-engine", version = "0.1.0" }
-hd-spec = { path = "../hd-spec", version = "0.1.0" }
+hd-cas = { path = "../hd-cas", version = "0.2.0" }
+hd-engine = { path = "../hd-engine", version = "0.2.0" }
+hd-spec = { path = "../hd-spec", version = "0.2.0" }
 notify.workspace = true
 glob.workspace = true
 blake3.workspace = true

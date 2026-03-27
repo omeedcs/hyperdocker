@@ -10,7 +10,7 @@ keywords.workspace = true
 categories.workspace = true
 
 [dependencies]
-hd-cas = { path = "../hd-cas", version = "0.1.0" }
+hd-cas = { path = "../hd-cas", version = "0.2.0" }
 blake3.workspace = true
 serde.workspace = true
 bincode.workspace = true

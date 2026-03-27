@@ -14,13 +14,13 @@ name = "hd"
 path = "src/main.rs"
 
 [dependencies]
-hd-cas = { path = "../hd-cas", version = "0.1.0" }
-hd-engine = { path = "../hd-engine", version = "0.1.0" }
-hd-spec = { path = "../hd-spec", version = "0.1.0" }
-hd-mount = { path = "../hd-mount", version = "0.1.0" }
-hd-watch = { path = "../hd-watch", version = "0.1.0" }
-hd-sandbox = { path = "../hd-sandbox", version = "0.1.0" }
-hd-oci = { path = "../hd-oci", version = "0.1.0" }
+hd-cas = { path = "../hd-cas", version = "0.2.0" }
+hd-engine = { path = "../hd-engine", version = "0.2.0" }
+hd-spec = { path = "../hd-spec", version = "0.2.0" }
+hd-mount = { path = "../hd-mount", version = "0.2.0" }
+hd-watch = { path = "../hd-watch", version = "0.2.0" }
+hd-sandbox = { path = "../hd-sandbox", version = "0.2.0" }
+hd-oci = { path = "../hd-oci", version = "0.2.0" }
 clap.workspace = true
 dirs.workspace = true
 thiserror.workspace = true

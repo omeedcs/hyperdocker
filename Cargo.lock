@@ -581,7 +581,7 @@ checksum = "841d1cc9bed7f9236f321df977030373f4a4163ae1a7dbfe1a51a2c1a51d9100"
 
 [[package]]
 name = "hd-cas"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "bincode",
  "blake3",
@@ -595,7 +595,7 @@ dependencies = [
 
 [[package]]
 name = "hd-cli"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "clap",
  "dirs",
@@ -614,7 +614,7 @@ dependencies = [
 
 [[package]]
 name = "hd-engine"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "bincode",
  "blake3",
@@ -628,7 +628,7 @@ dependencies = [
 
 [[package]]
 name = "hd-mount"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "fuser",
  "hd-cas",
@@ -640,7 +640,7 @@ dependencies = [
 
 [[package]]
 name = "hd-oci"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "flate2",
  "hd-cas",
@@ -656,7 +656,7 @@ dependencies = [
 
 [[package]]
 name = "hd-sandbox"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "hd-spec",
  "nix",
@@ -666,7 +666,7 @@ dependencies = [
 
 [[package]]
 name = "hd-spec"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "blake3",
  "glob",
@@ -680,7 +680,7 @@ dependencies = [
 
 [[package]]
 name = "hd-watch"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "blake3",
  "glob",
