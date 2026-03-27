@@ -71,6 +71,32 @@ fn save_state(root_hash: &ContentHash, file_hashes: &BTreeMap<String, ContentHas
     }
 }
 
+/// A stub provider that accepts any provider name and hashes the dependency spec
+/// deterministically. Used by the CLI so that unknown providers (pip, npm, apt, etc.)
+/// don't cause an error — the provider identity is still reflected in the DAG hash.
+pub(crate) struct StubProvider {
+    pub(crate) provider_name: String,
+}
+
+impl hd_spec::DependencyProvider for StubProvider {
+    fn name(&self) -> &str {
+        &self.provider_name
+    }
+
+    fn resolve(
+        &self,
+        spec: &hd_spec::DependencySpec,
+    ) -> Result<Vec<hd_spec::ResolvedDependency>, hd_spec::ProviderError> {
+        let key = format!("{}:{:?}", self.provider_name, spec);
+        Ok(vec![hd_spec::ResolvedDependency {
+            provider: self.provider_name.clone(),
+            name: format!("{:?}", spec),
+            version: "stub".to_string(),
+            artifact_hash: hd_cas::ContentHash::from_bytes(key.as_bytes()),
+        }])
+    }
+}
+
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let start = Instant::now();
 
@@ -88,7 +114,14 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     // 4. Compile spec with file ingestion.
     //    compile_with_files takes a &ContentStore for the file ingest and
     //    ownership of a separate ContentStore inside the Dag.
-    let registry = hd_spec::ProviderRegistry::new();
+    //    Register a StubProvider for every provider name mentioned in the spec so
+    //    that providers like "pip", "npm", "apt" don't cause a not-found error.
+    let mut registry = hd_spec::ProviderRegistry::new();
+    for provider_name in spec.dependencies.keys() {
+        registry.register(Box::new(StubProvider {
+            provider_name: provider_name.clone(),
+        }));
+    }
     let dag_store = hd_cas::ContentStore::open(&cas_path)?;
     let file_store = hd_cas::ContentStore::open(&cas_path)?;
     let mut dag = hd_engine::Dag::new(dag_store);

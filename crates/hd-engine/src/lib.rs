@@ -17,13 +17,14 @@
 //! ## Example
 //!
 //! ```no_run
-//! use hd_engine::{Dag, FileChange};
+//! use hd_engine::{Dag, ingest_tree};
 //! use hd_cas::ContentStore;
 //! use std::path::Path;
 //!
 //! let store = ContentStore::open(Path::new("/tmp/cas")).unwrap();
-//! let dag = Dag::build(Path::new("/my/project"), &store).unwrap();
-//! println!("root hash: {:?}", dag.root_hash());
+//! let mut dag = Dag::new(ContentStore::open(Path::new("/tmp/cas")).unwrap());
+//! let result = ingest_tree(Path::new("/my/project"), &[], &[], &store, &mut dag).unwrap();
+//! println!("root hash: {:?}", result.root_hash);
 //! ```
 
 pub mod node;

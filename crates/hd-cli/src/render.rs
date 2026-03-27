@@ -127,8 +127,8 @@ pub fn render_diff(dag: &Dag, old_root: &ContentHash, new_root: &ContentHash) {
     if !removed.is_empty() {
         println!("{}{}--- removed nodes ---{}", DIM, RED, RESET);
         for hash in &removed {
-            if let Some(node) = dag.get(&hash) {
-                let label_str = node_label(node, &hash);
+            if let Some(node) = dag.get(hash) {
+                let label_str = node_label(node, hash);
                 println!("{}{}  [REMOVED]{}", RED, label_str, RESET);
             }
         }

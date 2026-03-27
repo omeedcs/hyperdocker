@@ -21,10 +21,10 @@
 //! use hd_spec::EnvSpec;
 //! use std::path::Path;
 //!
-//! let spec = EnvSpec::load(Path::new("hd.toml")).unwrap();
-//! println!("environment: {}", spec.config.name);
-//! for dep in &spec.config.deps {
-//!     println!("  dep: {} = {}", dep.name, dep.version);
+//! let spec = EnvSpec::from_file(Path::new("hd.toml")).unwrap();
+//! println!("environment: {}", spec.environment.name);
+//! for (name, _dep) in &spec.dependencies {
+//!     println!("  dep: {}", name);
 //! }
 //! ```
 

@@ -21,8 +21,8 @@
 //! use std::path::Path;
 //!
 //! let filter = PathFilter::new(vec!["src/**".into()], vec!["target/**".into()]);
-//! let watcher = FileWatcher::new(Path::new("."), filter).unwrap();
-//! for change in watcher.changes() {
+//! let mut watcher = FileWatcher::new(Path::new("."), filter).unwrap();
+//! for change in watcher.poll_changes() {
 //!     println!("changed: {:?}", change);
 //! }
 //! ```

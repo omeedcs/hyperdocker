@@ -606,6 +606,8 @@ dependencies = [
  "hd-sandbox",
  "hd-spec",
  "hd-watch",
+ "serde",
+ "serde_json",
  "tempfile",
  "thiserror",
 ]

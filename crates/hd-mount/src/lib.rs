@@ -21,12 +21,8 @@
 //! use hd_mount::MountManager;
 //! use std::path::Path;
 //!
-//! let manager = MountManager::new(
-//!     Path::new("/tmp/cas"),
-//!     Path::new("/tmp/mnt"),
-//! ).unwrap();
-//! let handle = manager.mount().unwrap();
-//! // filesystem is now projected at /tmp/mnt
+//! let mut manager = MountManager::new(Path::new("/tmp/mnt")).unwrap();
+//! // register_mount takes an env ContentHash and creates the mountpoint directory
 //! ```
 
 pub mod projected;

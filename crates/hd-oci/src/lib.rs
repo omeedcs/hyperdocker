@@ -18,11 +18,11 @@
 //!
 //! ```no_run
 //! use hd_oci::{ImageRef, translate_dockerfile};
-//! use std::path::Path;
 //!
-//! // Translate an existing Dockerfile
-//! let spec = translate_dockerfile(Path::new("Dockerfile")).unwrap();
-//! println!("{}", spec);
+//! // Translate Dockerfile content into an EnvSpec
+//! let content = std::fs::read_to_string("Dockerfile").unwrap();
+//! let spec = translate_dockerfile(&content).unwrap();
+//! println!("{:?}", spec);
 //!
 //! // Reference an OCI image
 //! let image = ImageRef::parse("ubuntu:22.04").unwrap();

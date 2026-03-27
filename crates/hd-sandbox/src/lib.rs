@@ -17,14 +17,18 @@
 //! ## Example
 //!
 //! ```no_run
-//! use hd_sandbox::{Sandbox, ServiceDef};
+//! use hd_sandbox::{Sandbox, ServiceDef, RestartPolicy};
 //!
-//! let sandbox = Sandbox::new("/tmp/env").unwrap();
-//! sandbox.start_service(ServiceDef {
+//! let defs = vec![ServiceDef {
 //!     name: "redis".into(),
 //!     command: "redis-server".into(),
-//!     restart: Default::default(),
-//! }).unwrap();
+//!     args: vec![],
+//!     watch_patterns: vec![],
+//!     depends_on: vec![],
+//!     restart_policy: RestartPolicy::Always,
+//! }];
+//! let mut sandbox = Sandbox::new(defs);
+//! sandbox.start_all().unwrap();
 //! ```
 
 pub mod process;
