@@ -30,9 +30,11 @@ pub mod node;
 pub mod dag;
 pub mod invalidation;
 pub mod diff;
+pub mod ingest;
 
 // Re-export key types
 pub use node::Node;
 pub use dag::{Dag, DagError};
 pub use invalidation::{invalidate, FileChange, InvalidationResult};
 pub use diff::{dag_diff, DagDiff};
+pub use ingest::{ingest_tree, IngestResult, IngestError};
