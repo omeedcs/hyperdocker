@@ -23,7 +23,7 @@ fn dim(s: &str) -> String { format!("{}{}{}", DIM, s, RESET) }
 
 pub fn run(path: Option<&str>) -> Result<(), Box<dyn std::error::Error>> {
     let project_dir = match path {
-        Some(p) => PathBuf::from(p),
+        Some(p) => std::fs::canonicalize(p)?,
         None => find_demo_project()?,
     };
 
@@ -219,7 +219,7 @@ fn docker_build_timed(dir: &Path, no_cache: bool) -> Result<f64, Box<dyn std::er
         cmd.arg("--no-cache");
     }
     cmd.current_dir(dir);
-    cmd.stdout(Stdio::null()).stderr(Stdio::null());
+    cmd.stdout(Stdio::null()).stderr(Stdio::piped());
     let start = Instant::now();
     let output = cmd.output()?;
     let elapsed_ms = start.elapsed().as_secs_f64() * 1000.0;
