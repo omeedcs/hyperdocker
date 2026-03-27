@@ -4,6 +4,8 @@ use hd_engine::{Dag, DagError, Node};
 use crate::provider::{ProviderError, ProviderRegistry};
 use crate::spec::EnvSpec;
 
+use hd_engine::ingest_tree;
+
 #[derive(Debug, thiserror::Error)]
 pub enum CompileError {
     #[error("DAG error: {0}")]
@@ -59,6 +61,66 @@ pub fn compile(
     }
 
     // 4. Root EnvNode
+    let env_node = Node::env(&spec.environment.name, children);
+    let env_hash = dag.insert(env_node)?;
+
+    Ok(env_hash)
+}
+
+/// Compile an EnvSpec into a DAG, including project files from disk.
+///
+/// This is the same as [`compile`] but also ingests the project file tree from
+/// `project_dir` using the `[files]` section of the spec, and adds the
+/// resulting file-tree root hash as a child of the Env node.
+pub fn compile_with_files(
+    spec: &EnvSpec,
+    registry: &ProviderRegistry,
+    dag: &mut Dag,
+    project_dir: &std::path::Path,
+    store: &hd_cas::ContentStore,
+) -> Result<ContentHash, CompileError> {
+    let mut children = Vec::new();
+
+    // 1. Base image as a PackageNode
+    let base_node = Node::package(
+        "oci",
+        &spec.environment.base,
+        "latest",
+        ContentHash::from_bytes(spec.environment.base.as_bytes()),
+    );
+    let base_hash = dag.insert(base_node)?;
+    children.push(base_hash);
+
+    // 2. Resolve and insert dependencies
+    let resolved = registry.resolve_all(&spec.dependencies)?;
+    for dep in &resolved {
+        let pkg_node = Node::package(
+            &dep.provider,
+            &dep.name,
+            &dep.version,
+            dep.artifact_hash,
+        );
+        let pkg_hash = dag.insert(pkg_node)?;
+        children.push(pkg_hash);
+    }
+
+    // 3. Ingest project files from disk
+    let includes = &spec.files.include;
+    let excludes = &spec.files.exclude;
+    let ingest_result = ingest_tree(project_dir, includes, excludes, store, dag)
+        .map_err(|e| CompileError::Dag(DagError::Serialization(e.to_string())))?;
+    children.push(ingest_result.root_hash);
+
+    // 4. Build steps (chained: each step's inputs include the previous step)
+    let mut prev_inputs: Vec<ContentHash> = children.clone();
+    for step_cmd in &spec.build.steps {
+        let step_node = Node::build_step(step_cmd, prev_inputs.clone(), vec![]);
+        let step_hash = dag.insert(step_node)?;
+        children.push(step_hash);
+        prev_inputs = vec![step_hash];
+    }
+
+    // 5. Root EnvNode
     let env_node = Node::env(&spec.environment.name, children);
     let env_hash = dag.insert(env_node)?;
 
@@ -218,5 +280,50 @@ steps = ["make"]
         let h2 = compile(&spec, &registry2, &mut dag2).unwrap();
 
         assert_eq!(h1, h2);
+    }
+
+    #[test]
+    fn compile_with_project_files() {
+        let (registry, store, _store_dir) = setup();
+
+        // Create a temp project dir with some Python files
+        let project_dir = TempDir::new().unwrap();
+        std::fs::write(project_dir.path().join("app.py"), b"print('hello')").unwrap();
+        std::fs::create_dir(project_dir.path().join("src")).unwrap();
+        std::fs::write(project_dir.path().join("src").join("util.py"), b"def helper(): pass").unwrap();
+
+        let spec = EnvSpec::from_toml(
+            r#"
+[environment]
+name = "pyapp"
+base = "python:3.11"
+
+[files]
+include = ["*.py", "src"]
+exclude = []
+"#,
+        )
+        .unwrap();
+
+        // Open a second handle to the same store so we can pass it to compile_with_files
+        // without conflicting borrows on `dag`.
+        let store_dir = TempDir::new().unwrap();
+        let store2 = hd_cas::ContentStore::open(store_dir.path()).unwrap();
+        let mut dag = hd_engine::Dag::new(store);
+        let result = compile_with_files(&spec, &registry, &mut dag, project_dir.path(), &store2).unwrap();
+
+        let root = dag.get(&result).unwrap();
+        match root {
+            hd_engine::Node::Env { name, children } => {
+                assert_eq!(name, "pyapp");
+                // At minimum: base image node + file tree root
+                assert!(
+                    children.len() >= 2,
+                    "expected at least 2 children (base + file tree), got {}",
+                    children.len()
+                );
+            }
+            _ => panic!("expected EnvNode"),
+        }
     }
 }
