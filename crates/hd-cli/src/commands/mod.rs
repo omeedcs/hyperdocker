@@ -7,3 +7,4 @@ pub mod ingest;
 pub mod dag;
 pub mod cas;
 pub mod lock;
+pub mod demo;

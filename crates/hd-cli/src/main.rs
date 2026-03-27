@@ -67,6 +67,11 @@ enum Commands {
         #[command(subcommand)]
         action: CasAction,
     },
+    /// Run the benchmark demo
+    Demo {
+        /// Path to a project directory (defaults to bundled flask-demo)
+        path: Option<String>,
+    },
 }
 
 #[derive(Subcommand)]
@@ -101,6 +106,7 @@ fn main() {
             CasAction::Stats => commands::cas::run_stats(),
             CasAction::Gc => commands::cas::run_gc(),
         },
+        Commands::Demo { path } => commands::demo::run(path.as_deref()),
     };
 
     if let Err(e) = result {
